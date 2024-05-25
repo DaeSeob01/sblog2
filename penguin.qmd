@@ -1,0 +1,98 @@
+---
+title: "남극 펭귄 보고서"
+format: html
+editor_options: 
+  chunk_output_type: console
+engine: knitr
+knitr:
+  opts_chunk:
+    message: false
+    warning: false
+    collapse: true
+    code-overflow: code-overflow
+    comment: "#>"
+    R.options:
+      knitr.graphics.auto_pdf: true
+    dev: "ragg_png"
+    fig-asp: 0.618  # 1 / phi
+---
+
+```{mermaid}
+flowchart LR
+    A[데이터] -->|다운로드| B(데이터프레임)
+    B -->|ggplot| D[시각화]
+    B -->|gt| E[표]
+    B -->|tidymodels| F[fa:fa-car 모형]
+```
+
+
+# 데이터
+
+남극 펭귄 연구소에...
+
+- 아델리
+- 젠투
+- 턱끈
+
+
+```{r}
+library(tidyverse)
+
+penguins_raw <- read_csv("https://gist.githubusercontent.com/slopp/ce3b90b9168f2f921784de84fa445651/raw/4ecf3041f0ed4913e7c230758733948bc561f434/penguins.csv")
+
+```
+
+# 데이터 전처리
+
+```{r}
+penguins <- penguins_raw %>% 
+  drop_na()
+
+penguins %>% 
+  slice_sample(n = 10)
+```
+
+
+# EDA
+
+## 체중과 물칼퀴 관계
+
+```{r}
+penguins %>% 
+  ggplot(aes (x = flipper_length_mm, y = body_mass_g,
+              color = species)) +
+    geom_point() +
+    facet_wrap(~island)
+
+
+```
+
+아델리 펭귄은 성격이 좋지 않아서 토르겐섬에 혼자 삶.
+
+## 표
+```{r}
+library(gt)
+#install.packages("gtExtras")
+library(gtExtras)
+penguins %>% 
+  group_by(species) %>% 
+  summarize(평균_부리길이 = mean(bill_length_mm),
+            평균_부리깊이 = mean(bill_depth_mm)) %>%
+  gt() %>%
+  fmt_number(
+    columns = c(평균_부리길이, , 평균_부리깊이),
+    decimals = 1,
+    suffixing = FALSE
+  ) %>% 
+  gtExtras::gt_theme_nytimes()
+
+
+```
+
+
+
+# 모형
+
+# 결어
+
+

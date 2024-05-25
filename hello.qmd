@@ -1,0 +1,58 @@
+---
+title: "쿼토를 처음 뵙습니다."
+format: html
+editor: visual
+lang : ko-KR
+---
+
+# 쿼토
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## 실행방법
+
+![시각화](images/gapminder.jpg){#fig-산점도 fig-align="center" width="1379"}
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+library(tidyverse)
+library(gapminder)
+gapminder_g <- gapminder %>%
+  filter(year == max(year)) %>% 
+ggplot(aes(x = gdpPercap , y = lifeExp,color=continent)) +
+  geom_point() +
+  labs(title = "가장 최근 1인당 국민소득과 기대수명 관계",
+       x = "1인당 국민소득",
+       y = "기대수명") +
+      theme_minimal() +
+  facet_wrap(~continent) +
+  theme(legend.position = "none") +
+  scale_x_log10(labels = scales::comma)
+gapminder_g
+```
+
+You can add options to executable code like this
+
+```{r}
+
+library(tidyverse)
+library(gapminder)
+gapminder_g2 <- gapminder %>% 
+  dplyr:: filter(continent %in% c("Asia","Europe")) %>% 
+  filter(year == min(year)) %>% 
+  ggplot(aes(x = continent,y =pop,fill =continent))+
+
+  geom_boxplot() + 
+  labs(title = "대륙별 인구",
+                        x = "대륙",
+                        y = "인구")+
+  scale_y_log10(labels = scales::comma)+
+  geom_jitter() +
+  scale_fill_manual(values = c("Asia" = "blue",
+                               "Europe" = "red"))
+
+gapminder_g2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
